@@ -319,7 +319,23 @@
             orderText += `\n${totalPriceElem}\n`;
 
             navigator.clipboard.writeText(orderText).then(() => {
-                alert('訂單已複製，請您在LINE貼上傳送即可');
+                // 修改弹出消息的字体大小为50px
+                const div = document.createElement('div');
+                div.style.fontSize = '50px';
+                div.style.color = 'black';
+                div.style.backgroundColor = 'white';
+                div.style.position = 'fixed';
+                div.style.top = '50%';
+                div.style.left = '50%';
+                div.style.transform = 'translate(-50%, -50%)';
+                div.style.padding = '20px';
+                div.style.border = '25px solid #e1c94f';
+                div.style.zIndex = '1000';
+                div.textContent = '訂單已複製，請您在LINE貼上傳送即可';
+                document.body.appendChild(div);
+                setTimeout(() => {
+                    document.body.removeChild(div);
+                }, 5000);
             }, () => {
                 alert('複製失敗');
             });
