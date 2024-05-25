@@ -252,7 +252,7 @@
                 menuItem.className = 'menu-item';
 
                 const label = document.createElement('label');
-                label.textContent = `${item.name} - $${item.price}`;
+                label.textContent = `${item.name}    $${item.price}`; // 将 "-" 替换为两个空格
 
                 const minusButton = document.createElement('button');
                 minusButton.textContent = '-';
