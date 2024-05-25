@@ -252,7 +252,7 @@
                 menuItem.className = 'menu-item';
 
                 const label = document.createElement('label');
-                label.textContent = `${item.name}    $${item.price}`; // 将 "-" 替换为两个空格
+                label.textContent = `${item.name}  $${item.price}`; // 将 "-" 替换为两个空格
 
                 const minusButton = document.createElement('button');
                 minusButton.textContent = '-';
@@ -348,7 +348,7 @@
             orderText += `\n${sauce}\n`;
 
             const totalPriceElem = document.getElementById('total-price').textContent;
-            orderText += `\n${totalPriceElem}\n`;
+            orderText += `\n${totalPriceElem}`;
 
             navigator.clipboard.writeText(orderText).then(() => {
                 // 修改弹出消息的字体大小为50px
