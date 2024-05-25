@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>簡易點菜系統</title>
+    <style>
+        @font-face {
+            font-family: 'DFLiSongStd-W3';
+            src: url('https://www.wfonts.com/download/data/2016/06/14/dflisongstd-w3/dflisongstd-w3.ttf') format('truetype');
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 50px; /* 字體設置為50px */
+        }
+        .container {
+            flex: 1;
+            padding: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .navbar button {
+            background-color: white;
+            color: black;
+            border: 10px solid black; /* 粗框 */
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 50px; /* 字體設置為50px */
+            transition: all 0.3s ease;
+        }
+        .navbar button:hover {
+            border-color: #e1c94f;
+        }
+        .navbar button.active {
+            border-color: #e1c94f; /* 粗框 */
+        }
+        .menu-item {
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 50px; /* 字體設置為50px */
+            background-color: white; /* 白色背景 */
+            color: black; /* 黑色字體 */
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .menu-item label {
+            margin-right: 20px;
+            flex: 1;
+        }
+        .menu-item input[type="number"] {
+            width: 120px;
+            padding: 10px;
+            font-size: 50px; /* 字體設置為50px */
+            margin-left: 10px;
+        }
+        .menu-item button {
+            padding: 10px 20px;
+            font-size: 50px; /* 字體設置為50px */
+        }
+        .order-summary {
+            margin-top: 30px;
+            border-top: 1px solid #000;
+            padding-top: 20px;
+            background-color: #e1c94f; /* 修改背景色 */
+            padding: 30px;
+            font-size: 50px; /* 字體設置為50px */
+            display: flex;
+            justify-content: space-between;
+        }
+        .order-summary-left {
+            flex: 1;
+        }
+        .order-summary-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .order-summary input[type="checkbox"] {
+            transform: scale(2);
+            margin-right: 10px;
+        }
+        .copy-button {
+            padding: 10px 20px;
+            font-size: 50px; /* 字體設置為50px */
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .header {
+            background-color: #e1c94f;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header h1 {
+            font-family: 'DFLiSongStd-W3', Arial, sans-serif;
+            font-size: 120px;
+            margin: 0;
+        }
+        @media (max-width: 600px) {
+            .navbar button {
+                padding: 12px 20px;
+                font-size: 50px; /* 字體設置為50px */
+            }
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .menu-item input[type="number"] {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            .menu-item button {
+                width: 100%;
+                margin-top: 10px;
+            }
+            .order-summary {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .order-summary-right {
+                flex-direction: row;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>壹 · 貳早餐</h1>
+    </div>
+    <div class="container">
+        <div class="navbar">
+            <button onclick="showMenu('dishes', this)">蛋餅</button>
+            <button onclick="showMenu('snacks', this)">小點</button>
+            <button onclick="showMenu('drinks', this)">飲料</button>
+        </div>
+        <h1 style="display: none;">點菜系統</h1>
+        <div class="menu" id="menu">
+            <!-- 動態生成菜單 -->
+        </div>
+    </div>
+    <div class="order-summary" id="order-summary">
+        <div class="order-summary-left">
+            <h2>訂單</h2>
+            <ul id="order-list"></ul>
+            <p id="total-price">共計 0 樣 0 元</p>
+        </div>
+        <div class="order-summary-right">
+            <div>
+                <input type="checkbox" id="add-spicy">
+                <label for="add-spicy">加辣</label>
+            </div>
+            <button class="copy-button" onclick="copyOrder()">複製</button>
+        </div>
+    </div>
+
+    <script>
+        const menus = {
+            dishes: [
+                { name: '蛋餅A', price: 10 },
+                { name: '蛋餅B', price: 15 },
+                { name: '蛋餅C', price: 20 },
+                { name: '蛋餅D', price: 25 },
+                { name: '蛋餅E', price: 30 },
+                { name: '蛋餅F', price: 35 },
+                { name: '蛋餅G', price: 40 },
+                { name: '蛋餅H', price: 45 },
+                { name: '蛋餅I', price: 50 },
+                { name: '蛋餅J', price: 55 },
+                { name: '蛋餅K', price: 60 },
+                { name: '蛋餅L', price: 65 },
+                { name: '蛋餅M', price: 70 },
+                { name: '蛋餅N', price: 75 }
+            ],
+            snacks: [
+                { name: '小點A', price: 5 },
+                { name: '小點B', price: 6 },
+                { name: '小點C', price: 7 },
+                { name: '小點D', price: 8 },
+                { name: '小點E', price: 9 }
+            ],
+            drinks: [
+                { name: '飲料A', price: 3 },
+                { name: '飲料B', price: 4 },
+                { name: '飲料C', price: 5 },
+                { name: '飲料D', price: 6 }
+            ]
+        };
+
+        let order = [];
+
+        function showMenu(category, button) {
+            const menuContainer = document.getElementById('menu');
+            menuContainer.innerHTML = ''; // 清空之前的菜單項目
+
+            // 移除其他按鈕的 active 樣式
+            const buttons = document.querySelectorAll('.navbar button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // 添加當前按鈕的 active 樣式
+            button.classList.add('active');
+
+            menus[category].forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+
+                const label = document.createElement('label');
+                label.textContent = `${item.name} - $${item.price}`;
+
+                const minusButton = document.createElement('button');
+                minusButton.textContent = '-';
+                minusButton.onclick = () => changeQuantity(item.name, -1);
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.name = 'quantity';
+                quantityInput.value = getOrderQuantity(item.name);
+                quantityInput.min = 0;
+                quantityInput.setAttribute('data-name', item.name);
+                quantityInput.oninput = () => updateOrder(item.name, quantityInput.value);
+
+                const plusButton = document.createElement('button');
+                plusButton.textContent = '+';
+                plusButton.onclick = () => changeQuantity(item.name, 1);
+
+                menuItem.appendChild(label);
+                menuItem.appendChild(minusButton);
+                menuItem.appendChild(quantityInput);
+                menuItem.appendChild(plusButton);
+
+                menuContainer.appendChild(menuItem);
+            });
+
+            updateOrderSummary(); // 切換菜單時更新訂單摘要
+        }
+
+        function changeQuantity(name, change) {
+            const quantityInput = document.querySelector(`input[data-name="${name}"]`);
+            let currentQuantity = parseInt(quantityInput.value);
+            currentQuantity = isNaN(currentQuantity) ? 0 : currentQuantity;
+            quantityInput.value = Math.max(0, currentQuantity + change); // 確保數量至少為 0
+            updateOrder(name, quantityInput.value);
+        }
+
+        function getOrderQuantity(name) {
+            const item = order.find(i => i.name === name);
+            return item ? item.quantity : 0;
+        }
+
+        function updateOrder(name, quantity) {
+            const item = order.find(i => i.name === name);
+            if (item) {
+                item.quantity = parseInt(quantity);
+            } else {
+                const menuItem = menus.dishes.find(i => i.name === name) || menus.snacks.find(i => i.name === name) || menus.drinks.find(i => i.name === name);
+                if (menuItem) {
+                    order.push({ name: menuItem.name, price: menuItem.price, quantity: parseInt(quantity) });
+                }
+            }
+
+            // 過濾掉數量為 0 的項目
+            order = order.filter(item => item.quantity > 0);
+
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            const orderList = document.getElementById('order-list');
+            const totalPriceElem = document.getElementById('total-price');
+            let totalPrice = 0;
+            let totalItems = 0;
+
+            orderList.innerHTML = ''; // 清空之前的訂單列表
+
+            order.forEach(item => {
+                const listItem = document.createElement('li');
+                const itemTotalPrice = item.price * item.quantity;
+                listItem.textContent = `${item.name} (${item.quantity})  $${itemTotalPrice.toFixed(0)}`;
+                orderList.appendChild(listItem);
+
+                totalPrice += itemTotalPrice;
+                totalItems += item.quantity;
+            });
+
+            totalPriceElem.textContent = `共計 ${totalItems} 樣 ${totalPrice.toFixed(0)} 元`;
+        }
+
+        function copyOrder() {
+            let orderText = '';
+            order.forEach(item => {
+                const itemTotalPrice = item.price * item.quantity;
+                orderText += `${item.name} (${item.quantity})  $${itemTotalPrice.toFixed(0)}\n`;
+            });
+
+            const addSpicy = document.getElementById('add-spicy').checked;
+            if (addSpicy) {
+                orderText += '\n加辣\n';
+            }
+
+            const totalPriceElem = document.getElementById('total-price').textContent;
+            orderText += `\n${totalPriceElem}\n`;
+
+            navigator.clipboard.writeText(orderText).then(() => {
+                alert('訂單已複製，請您在LINE貼上傳送即可');
+            }, () => {
+                alert('複製失敗');
+            });
+        }
+
+        // 預設顯示蛋餅菜單
+        showMenu('dishes', document.querySelector('.navbar button'));
+    </script>
+</body>
+</html>
