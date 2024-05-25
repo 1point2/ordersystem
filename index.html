@@ -321,7 +321,7 @@
             navigator.clipboard.writeText(orderText).then(() => {
                 // 修改弹出消息的字体大小为50px
                 const div = document.createElement('div');
-                div.style.fontSize = '50px';
+                div.style.fontSize = '60px';
                 div.style.color = 'black';
                 div.style.backgroundColor = 'white';
                 div.style.position = 'fixed';
@@ -331,11 +331,11 @@
                 div.style.padding = '50px';
                 div.style.border = '25px solid #e1c94f';
                 div.style.zIndex = '1000';
-                div.textContent = '訂單已複製\n請您在LINE貼上傳送即可';
+                div.textContent = '(訂單已複製)\n請您在LINE貼上傳送即可';
                 document.body.appendChild(div);
                 setTimeout(() => {
                     document.body.removeChild(div);
-                }, 5000);
+                }, 3000);
             }, () => {
                 alert('複製失敗');
             });
