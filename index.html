@@ -84,11 +84,26 @@
         .order-summary-right {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start; /* 靠左對齊 */
             justify-content: center;
         }
         .order-summary input[type="checkbox"] {
             transform: scale(2);
+            margin-right: 10px;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 靠左對齊 */
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .radio-group label {
+            font-size: 40px;
+        }
+        .radio-group input[type="radio"] {
+            transform: scale(1.5); /* 加大單選按鈕 */
             margin-right: 10px;
         }
         .copy-button {
@@ -171,6 +186,10 @@
             <div>
                 <input type="checkbox" id="add-spicy">
                 <label for="add-spicy">加辣</label>
+            </div>
+            <div class="radio-group">
+                <label><input type="radio" name="sauce" value="醬正常" checked> 醬正常</label>
+                <label><input type="radio" name="sauce" value="不加醬"> 不加醬</label>
             </div>
             <button class="copy-button" onclick="copyOrder()">複製</button>
         </div>
@@ -325,6 +344,9 @@
                 orderText += '\n加辣\n';
             }
 
+            const sauce = document.querySelector('input[name="sauce"]:checked').value;
+            orderText += `\n${sauce}\n`;
+
             const totalPriceElem = document.getElementById('total-price').textContent;
             orderText += `\n${totalPriceElem}\n`;
 
@@ -334,7 +356,7 @@
                 overlay.style.display = 'block';
 
                 const div = document.createElement('div');
-                div.style.fontSize = '50px';
+                div.style.fontSize = '60px';
                 div.style.color = 'black';
                 div.style.backgroundColor = 'white';
                 div.style.position = 'fixed';
