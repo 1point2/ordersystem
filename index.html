@@ -133,17 +133,17 @@
             z-index: 999;
             display: none;
         }
-        .phone-input {
+        .phone-input, .pickup-time {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             margin-top: 10px;
         }
-        .phone-input label {
+        .phone-input label, .pickup-time label {
             font-size: 50px; /* 字體設置為50px */
             margin-bottom: 10px;
         }
-        .phone-input input {
+        .phone-input input, .pickup-time select {
             font-size: 50px; /* 字體設置為50px */
             padding: 10px;
             width: 300px;
@@ -174,7 +174,7 @@
                 flex-direction: row;
                 margin-top: 20px;
             }
-            .phone-input input {
+            .phone-input input, .pickup-time select {
                 width: 100%;
             }
         }
@@ -213,6 +213,18 @@
             <div class="phone-input">
                 <label for="phone">輸入電話後三碼</label>
                 <input type="text" id="phone" maxlength="3">
+            </div>
+            <div class="pickup-time">
+                <label for="pickup-hour">請輸入取餐時間</label>
+                <div>
+                    <select id="pickup-hour">
+                        <!-- 动态生成小时选项 -->
+                    </select>
+                    :
+                    <select id="pickup-minute">
+                        <!-- 动态生成分钟选项 -->
+                    </select>
+                </div>
             </div>
             <button class="copy-button" onclick="copyOrder()">複製</button>
         </div>
@@ -362,8 +374,10 @@
 
         function copyOrder() {
             const phone = document.getElementById('phone').value; // 获取电话后三码
+            const pickupHour = document.getElementById('pickup-hour').value; // 获取取餐小时
+            const pickupMinute = document.getElementById('pickup-minute').value; // 获取取餐分钟
 
-            let orderText = `電話後三碼: ${phone}\n\n`; // 添加到文本最上方
+            let orderText = `電話後三碼: ${phone}\n\n取餐時間: ${pickupHour}:${pickupMinute}\n\n`; // 添加到文本最上方
             order.forEach(item => {
                 const itemTotalPrice = item.price * item.quantity;
                 orderText += `${item.name} (${item.quantity})  $${itemTotalPrice.toFixed(0)}\n`;
@@ -406,6 +420,26 @@
                 alert('複製失敗');
             });
         }
+
+        function populateTimeOptions() {
+            const hourSelect = document.getElementById('pickup-hour');
+            const minuteSelect = document.getElementById('pickup-minute');
+
+            for (let i = 0; i < 24; i++) {
+                const hourOption = document.createElement('option');
+                hourOption.value = hourOption.textContent = String(i).padStart(2, '0');
+                hourSelect.appendChild(hourOption);
+            }
+
+            for (let i = 0; i < 60; i++) {
+                const minuteOption = document.createElement('option');
+                minuteOption.value = minuteOption.textContent = String(i).padStart(2, '0');
+                minuteSelect.appendChild(minuteOption);
+            }
+        }
+
+        // 调用函数以填充时间选择框
+        populateTimeOptions();
 
         // 預設顯示蛋餅菜單
         showMenu('dishes', document.querySelector('.navbar button'));
