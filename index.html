@@ -426,7 +426,8 @@
                 setTimeout(() => {
                     document.body.removeChild(div);
                     overlay.style.display = 'none';
-                }, 1000);
+                    window.close(); // 在弹出消息后关闭窗口
+                }, 2500);
             }, () => {
                 alert('複製失敗');
             });
