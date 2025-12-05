@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>one.two ordersystem</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> --> <!-- 已移除 viewport meta 標籤 -->
+    <style>
+        @font-face {
+            font-family: 'DFLiSongStd-W3';
+            /* 建議將字體文件下載到本地或使用更可靠的字體服務 */
+            src: url('https://www.wfonts.com/download/data/2016/06/14/dflisongstd-w3/dflisongstd-w3.ttf') format('truetype');
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 50px; /* 字體設置為50px */
+        }
+        .container {
+            flex: 1;
+            padding: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+            /* flex-wrap: wrap; */ /* 如果不希望換行，可以移除或註釋 */
+        }
+        .navbar button {
+            background-color: white; /* 設定背景顏色為白色 */
+            color: #333; /* 設定文字顏色為深灰色以提高對比度 */
+            border: 2px solid #ccc; /* 設定一個較淺、較細的 2px 邊框 */
+            border-radius: 8px; /* 設定 8px 的圓角 */
+            padding: 15px 25px; /* 調整內邊距以改善觸控目標大小和外觀 */
+            cursor: pointer; /* 鼠標懸停時顯示為手型指針 */
+            font-size: 23px; /* 調整按鈕的基本字體大小 */
+            font-weight: 500; /* 設定中等字重以提高清晰度 */
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加細微的陰影以增加深度感 */
+            margin: 5px; /* 在按鈕周圍添加一些間距 */
+            text-decoration: none; /* 移除文字的下劃線等裝飾 */
+            outline: none; /* 移除預設的焦點輪廓 */
+        }
+        .navbar button:hover, .navbar button:focus {
+            background-color: #fdf8e1; /* 設定與主題色 #e1c94f 相關的淺黃色背景 */
+            color: black; /* 確保懸停時文字清晰可讀 */
+            border-color: #e1c94f; /* 懸停/聚焦時，邊框顏色使用主題色 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 陰影稍微加大 */
+            transform: translateY(-2px); /* 產生輕微向上移動的效果 */
+            outline: 1px solid #e1c94f; /* 為了無障礙性(accessibility)，設定一個自訂的焦點輪廓 */
+        }
+        .navbar button.active {
+            background-color: #e1c94f; /* 活動按鈕使用主題色作為背景 */
+            color: black; /* 確保文字清晰可讀 */
+            border-color: #c8b040; /* 活動狀態的邊框使用主題色的較暗色調 */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* 使用內陰影來營造“被按下”的外觀 */
+            transform: translateY(0); /* 重置（取消）向上移動的效果 */
+        }
+        .menu-item {
+            margin: 15px 0;
+            display: flex;
+            /* flex-wrap: wrap; */ /* 如果不希望換行，可以移除或註釋 */
+            align-items: center;
+            justify-content: space-between;
+            font-size: 50px; /* 字體設置為50px */
+            background-color: white; /* 白色背景 */
+            color: black; /* 黑色字體 */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* 圓角 */
+        }
+        .menu-item label {
+            margin-right: 20px;
+            flex: 1;
+            min-width: 200px; /* 確保標籤有足夠寬度 */
+        }
+        .menu-item input[type="number"] {
+            width: 120px;
+            padding: 10px;
+            font-size: 50px; /* 字體設置為50px */
+            margin-left: 10px;
+            text-align: center; /* 置中数字 */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .menu-item button {
+            padding: 10px 20px;
+            font-size: 50px; /* 字體設置為50px */
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .menu-item button:hover {
+            background-color: #e0e0e0;
+        }
+        .order-summary {
+            margin-top: 30px;
+            border-top: 1px solid #000;
+            padding-top: 20px;
+            background-color: #e1c94f; /* 修改背景色 */
+            padding: 30px;
+            font-size: 50px; /* 字體設置為50px */
+            display: flex;
+            justify-content: space-between;
+            /* flex-wrap: wrap; */  /* 如果不希望換行，可以移除或註釋 */
+            border-radius: 8px; /* 圓角 */
+        }
+        .order-summary-left {
+            flex: 1;
+            min-width: 300px; /* 確保有足夠空間 */
+        }
+        .order-summary-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 靠左對齊 */
+            justify-content: center;
+            min-width: 300px; /* 確保有足夠空間 */
+        }
+        .order-summary input[type="checkbox"] {
+            transform: scale(2);
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+         .order-summary label { /* 確保標籤和 checkbox 對齊 */
+            vertical-align: middle;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 靠左對齊 */
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .radio-group label {
+            font-size: 50px;
+            margin-bottom: 5px; /* 增加選項間距 */
+        }
+        .radio-group input[type="radio"] {
+            transform: scale(1.5); /* 加大單選按鈕 */
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .copy-button {
+            padding: 10px 20px;
+            font-size: 50px; /* 字體設置為50px */
+            margin-top: 20px; /* 增加與上方元素的間距 */
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+        .header {
+            background-color: #e1c94f;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header h1 {
+            font-family: 'DFLiSongStd-W3', Arial, sans-serif;
+            font-size: 120px;
+            margin: 0;
+            color: #333; /* 深色文字更易讀 */
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8); /* 半透明 */
+            z-index: 999;
+            display: none; /* 初始隱藏 */
+        }
+        .phone-input, .pickup-time {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 10px;
+            width: 100%; /* 使其充滿父容器寬度 */
+        }
+        .phone-input label, .pickup-time label {
+            font-size: 50px; /* 字體設置為50px */
+            margin-bottom: 10px;
+        }
+        .phone-input input, .pickup-time select {
+            font-size: 50px; /* 字體設置為50px */
+            padding: 10px;
+            /* width: calc(100% - 22px); */ /* 原有計算寬度 */
+            max-width: 300px; /* 限制最大寬度 */
+            width: 300px; /* 固定寬度 */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* 包含 padding 和 border 在寬度內 */
+        }
+        .pickup-time select {
+            width: auto; /* 自動寬度 */
+            min-width: 100px; /* 最小寬度 */
+            margin-right: 5px; /* 增加小時和分鐘選擇器間的距離 */
+        }
+        .pickup-time div { /* 用於包裹小時和分鐘選擇器 */
+            display: flex;
+            align-items: center;
+        }
+
+        /* 複製成功提示樣式 */
+        .copy-success-popup {
+            font-size: 55px;
+            color: black;
+            background-color: white;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 50px;
+            border: 25px solid #e1c94f;
+            z-index: 10000; /* 確保在最上層 */
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        /* 已移除 @media queries */
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>壹 · 貳早餐</h1>
+    </div>
+    <div class="container">
+        <div class="navbar">
+            <button onclick="showMenu('dishes', this)">蛋餅</button>
+            <button onclick="showMenu('toast', this)">吐司</button>
+            <button onclick="showMenu('hamburger', this)">漢堡</button>
+            <button onclick="showMenu('ftoast', this)">法式<br>吐司</button>
+            <button onclick="showMenu('ttoast', this)">總匯<br>吐司</button>
+            <button onclick="showMenu('jtoast', this)">果醬<br>薄片\厚片</button>
+            <button onclick="showMenu('snacks', this)">小點</button>
+            <button onclick="showMenu('drinks', this)">飲料</button>
+        </div>
+        <!-- 隱藏的標題，如果不需要可以移除 -->
+        <!-- <h1 style="display: none;">點菜系統</h1> -->
+        <div class="menu" id="menu">
+            <!-- 動態生成菜單 -->
+        </div>
+    </div>
+    <div class="order-summary" id="order-summary">
+        <div class="order-summary-left">
+            <h2>訂單</h2>
+            <ul id="order-list"></ul>
+            <p id="total-price">共計 0 樣 0 元</p>
+        </div>
+        <div class="order-summary-right">
+            <div>
+                <input type="checkbox" id="add-spicy">
+                <label for="add-spicy">加辣</label>
+            </div>
+            <div class="radio-group">
+                <label><input type="radio" name="sauce" value="醬正常" checked> 醬正常</label>
+                <label><input type="radio" name="sauce" value="不加醬"> 不加醬</label>
+            </div>
+            <div class="phone-input">
+                <label for="phone">輸入電話後三碼</label>
+                <input type="tel" id="phone" maxlength="3" pattern="[0-9]*">
+            </div>
+            <div class="pickup-time">
+                <label for="pickup-hour">請輸入取餐時間</label>
+                <div>
+                    <select id="pickup-hour">
+                        <!-- 动态生成小时选项 -->
+                    </select>
+                     :
+                    <select id="pickup-minute">
+                        <!-- 动态生成分钟选项 -->
+                    </select>
+                </div>
+            </div>
+            <button class="copy-button" onclick="copyOrder()">複製</button>
+        </div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        const menus = {
+            dishes: [
+                { name: '川麻雞腿蛋餅', price: 70 },
+                { name: '塔香里肌蛋餅', price: 60 },
+                { name: '打拋豬肉蛋餅', price: 55 },
+                { name: '豬里肌蛋餅', price: 50 },
+                { name: '燻雞蛋餅', price: 50 },
+                { name: '蛋沙拉蛋餅', price: 45 },
+                { name: '鮪魚蛋餅', price: 40 },
+                { name: '薯餅蛋餅', price: 40 },
+                { name: '蔬菜蛋餅', price: 40 },
+                { name: '起司蛋餅', price: 40 },
+                { name: '塔香蛋餅', price: 35 },
+                { name: '培根蛋餅', price: 35 },
+                { name: '火腿蛋餅', price: 35 },
+                { name: '肉鬆蛋餅', price: 35 },
+                { name: '玉米蛋餅', price: 35 },
+                { name: '原味蛋餅', price: 25 }
+            ],
+            ftoast: [
+                { name: '法式豬里肌吐司', price: 65 },
+                { name: '法式燻雞吐司', price: 65 },
+                { name: '法式鮪魚吐司', price: 55 },
+                { name: '法式起司吐司', price: 55 },
+                { name: '法式培根吐司', price: 50 },
+                { name: '法式火腿吐司', price: 50 },
+                { name: '法式肉鬆吐司', price: 50 }
+            ],
+            jtoast: [
+                { name: '草莓吐司', price: 25 },
+                { name: '奶酥吐司', price: 25 },
+                { name: '花生吐司', price: 25 },
+                { name: '香蒜吐司', price: 25 },
+                { name: '巧克力吐司', price: 25 },
+                { name: '草莓厚片', price: 30 },
+                { name: '奶酥厚片', price: 30 },
+                { name: '花生厚片', price: 30 },
+                { name: '香蒜厚片', price: 30 },
+                { name: '巧克力厚片', price: 30 }
+            ],
+            toast: [
+                { name: '川麻雞腿吐司', price: 70 },
+                { name: '塔香里肌吐司', price: 60 },
+                { name: '打拋豬肉吐司', price: 55 },
+                { name: '花生肉蛋吐司', price: 50 },
+                { name: '燻雞吐司', price: 50 },
+                { name: '豬里肌吐司', price: 50 },
+                { name: '蛋沙拉吐司', price: 45 },
+                { name: '鮪魚吐司', price: 40 },
+                { name: '薯餅吐司', price: 40 },
+                { name: '蔬菜吐司', price: 40 },
+                { name: '起司吐司', price: 40 },
+                { name: '塔香吐司', price: 35 },
+                { name: '培根吐司', price: 35 },
+                { name: '火腿吐司', price: 35 },
+                { name: '肉鬆吐司', price: 35 },
+                { name: '玉米吐司', price: 35 }
+            ],
+            ttoast: [
+                { name: '川麻雞腿總匯', price: 95 },
+                { name: '豬里肌總匯', price: 75 },
+                { name: '燻雞總匯', price: 75 },
+                { name: '鮪魚總匯', price: 65 },
+                { name: '肉鬆總匯', price: 60 },
+                { name: '培根總匯', price: 60 }
+            ],
+            hamburger: [
+                { name: '川麻雞腿漢堡', price: 80 },
+                { name: '塔香里肌漢堡', price: 70 },
+                { name: '打拋豬肉漢堡', price: 65 },
+                { name: '花生肉蛋漢堡', price: 60 },
+                { name: '燻雞漢堡', price: 60 },
+                { name: '豬里肌漢堡', price: 60 },
+                { name: '蛋沙拉漢堡', price: 55 },
+                { name: '鮪魚漢堡', price: 50 },
+                { name: '薯餅漢堡', price: 50 },
+                { name: '蔬菜漢堡', price: 50 },
+                { name: '起司漢堡', price: 50 },
+                { name: '塔香漢堡', price: 45 },
+                { name: '培根漢堡', price: 45 },
+                { name: '火腿漢堡', price: 45 },
+                { name: '肉鬆漢堡', price: 45 },
+                { name: '玉米漢堡', price: 45 }
+            ],
+            snacks: [
+                { name: '打拋豬肉飯', price: 60 },
+                { name: '打拋豬肉飯加蛋(全熟)', price: 75 },
+                { name: '打拋豬肉飯加蛋(半熟)', price: 75 }, 
+                { name: '蘑菇鐵板麵', price: 45 },
+                { name: '蘑菇鐵板麵加蛋(全熟)', price: 60 },
+                { name: '蘑菇鐵板麵加蛋(半熟)', price: 60 },
+                { name: '黑胡椒鐵板麵', price: 45 },
+                { name: '黑胡椒鐵板麵加蛋(全熟)', price: 60 },
+                { name: '黑胡椒鐵板麵加蛋(半熟)', price: 60 },
+                { name: '滷肉飯', price: 45 },
+                { name: '滷肉飯加蛋(全熟)', price: 60 },
+                { name: '滷肉飯加蛋(半熟)', price: 60 },
+                { name: '蔥抓餅', price: 30 },
+                { name: '蔥抓餅加蛋', price: 45 },
+                { name: '蘿蔔糕', price: 30 },
+                { name: '蘿蔔糕加蛋(全熟)', price: 45 },
+                { name: '蘿蔔糕加蛋(半熟)', price: 45 },
+                { name: '薯餅', price: 30 },
+                { name: '荷包蛋(半熟)', price: 15 },
+                { name: '荷包蛋(全熟)', price: 15 }
+            ],
+            drinks: [
+                { name: '(冰)鮮奶茶', price: 35 },
+                { name: '(熱)鮮奶茶', price: 35 },
+                { name: '(冰)黑芝麻堅果', price: 30 },
+                { name: '(冰)豆漿', price: 25 },
+                { name: '(熱)豆漿', price: 25 },
+                { name: '(冰)奶茶', price: 25 },
+                { name: '(熱)奶茶', price: 25 },
+                { name: '(冰)紅茶', price: 20 },
+                { name: '(熱)紅茶', price: 20 }
+            ]
+        };
+
+        let order = [];
+        let currentCategory = 'dishes'; 
+
+        function showMenu(category, button) {
+            currentCategory = category; 
+            const menuContainer = document.getElementById('menu');
+            menuContainer.innerHTML = ''; 
+
+            const buttons = document.querySelectorAll('.navbar button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (button) { 
+                button.classList.add('active');
+            }
+
+
+            menus[category].forEach(item => {
+                const menuItemDiv = document.createElement('div');
+                menuItemDiv.className = 'menu-item';
+
+                const label = document.createElement('label');
+                label.textContent = `${item.name}  $${item.price}`; 
+
+                const controlsDiv = document.createElement('div'); 
+                controlsDiv.style.display = 'flex';
+                controlsDiv.style.alignItems = 'center';
+
+
+                const minusButton = document.createElement('button');
+                minusButton.textContent = '-';
+                minusButton.onclick = () => changeQuantity(item.name, -1);
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.name = 'quantity';
+                quantityInput.value = getOrderQuantity(item.name);
+                quantityInput.min = 0;
+                quantityInput.setAttribute('data-name', item.name);
+                
+                quantityInput.oninput = () => updateOrderFromInput(item.name, quantityInput.value);
+
+
+                const plusButton = document.createElement('button');
+                plusButton.textContent = '+';
+                plusButton.onclick = () => changeQuantity(item.name, 1);
+
+                controlsDiv.appendChild(minusButton);
+                controlsDiv.appendChild(quantityInput);
+                controlsDiv.appendChild(plusButton);
+
+                menuItemDiv.appendChild(label);
+                menuItemDiv.appendChild(controlsDiv);
+
+                menuContainer.appendChild(menuItemDiv);
+            });
+
+            updateOrderSummary();
+        }
+
+        function changeQuantity(name, change) {
+            const quantityInput = document.querySelector(`input[data-name="${name}"]`);
+            if (quantityInput) { 
+                let currentQuantity = parseInt(quantityInput.value, 10);
+                currentQuantity = isNaN(currentQuantity) ? 0 : currentQuantity;
+                const newQuantity = Math.max(0, currentQuantity + change);
+                quantityInput.value = newQuantity;
+                updateOrder(name, newQuantity); 
+            }
+        }
+
+        function getOrderQuantity(name) {
+            const item = order.find(i => i.name === name);
+            return item ? item.quantity : 0;
+        }
+
+        
+        function updateOrderFromInput(name, quantityStr) {
+            const quantity = parseInt(quantityStr, 10);
+            if (isNaN(quantity) || quantity < 0) { 
+                 const quantityInput = document.querySelector(`input[data-name="${name}"]`);
+                 if(quantityInput) quantityInput.value = 0; 
+                 updateOrder(name, 0);
+            } else {
+                updateOrder(name, quantity);
+            }
+        }
+
+
+        function updateOrder(name, quantity) {
+            const itemIndex = order.findIndex(i => i.name === name);
+            const newQuantity = parseInt(quantity, 10); 
+
+            if (newQuantity > 0) {
+                if (itemIndex > -1) {
+                    order[itemIndex].quantity = newQuantity;
+                } else {
+                    let menuItem = null;
+                    
+                    for (const categoryKey in menus) {
+                        menuItem = menus[categoryKey].find(i => i.name === name);
+                        if (menuItem) break;
+                    }
+
+                    if (menuItem) {
+                        order.push({ name: menuItem.name, price: menuItem.price, quantity: newQuantity });
+                    } else {
+                        console.error("品項在菜單中未找到:", name); 
+                    }
+                }
+            } else { 
+                if (itemIndex > -1) {
+                    order.splice(itemIndex, 1);
+                }
+            }
+            updateOrderSummary();
+        }
+
+
+        function updateOrderSummary() {
+            const orderList = document.getElementById('order-list');
+            const totalPriceElem = document.getElementById('total-price');
+            let totalPrice = 0;
+            let totalItems = 0;
+
+            orderList.innerHTML = '';
+
+            order.forEach(item => {
+                if (item.quantity > 0) { 
+                    const listItem = document.createElement('li');
+                    const itemTotalPrice = item.price * item.quantity;
+                    listItem.textContent = `${item.name} (${item.quantity})  $${itemTotalPrice.toFixed(0)}`;
+                    orderList.appendChild(listItem);
+
+                    totalPrice += itemTotalPrice;
+                    totalItems += item.quantity;
+                }
+            });
+
+            totalPriceElem.textContent = `共計 ${totalItems} 樣 ${totalPrice.toFixed(0)} 元`;
+        }
+
+        function copyOrder() {
+            const phone = document.getElementById('phone').value;
+            const pickupHour = document.getElementById('pickup-hour').value;
+            const pickupMinute = document.getElementById('pickup-minute').value;
+
+            
+            if (!phone || phone.length !== 3 || !/^\d+$/.test(phone)) {
+                showCustomAlert("請輸入正確的電話後三碼 (3位數字)");
+                return;
+            }
+            if (!pickupHour || !pickupMinute) {
+                showCustomAlert("請選擇取餐時間");
+                return;
+            }
+            if (order.length === 0) {
+                showCustomAlert("您的訂單是空的喔！");
+                return;
+            }
+
+
+            let orderText = `電話後三碼: ${phone}\n\n取餐時間: ${pickupHour}:${pickupMinute}\n\n`;
+            order.forEach(item => {
+                if (item.quantity > 0) {
+                    const itemTotalPrice = item.price * item.quantity;
+                    orderText += `${item.name} (${item.quantity})  $${itemTotalPrice.toFixed(0)}\n`;
+                }
+            });
+
+            const addSpicy = document.getElementById('add-spicy').checked;
+            if (addSpicy) {
+                orderText += '\n加辣\n';
+            }
+
+            const sauce = document.querySelector('input[name="sauce"]:checked').value;
+            orderText += `\n${sauce}\n`;
+
+            const totalPriceElemText = document.getElementById('total-price').textContent;
+            orderText += `\n${totalPriceElemText}`;
+
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = orderText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccessMessage();
+                } else {
+                    showCustomAlert('複製失敗，請手動複製');
+                }
+            } catch (err) {
+                showCustomAlert('複製失敗，您的瀏覽器可能不支持此功能');
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function showCopySuccessMessage() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'block';
+
+            
+            const existingPopup = document.querySelector('.copy-success-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+
+            const div = document.createElement('div');
+            div.className = 'copy-success-popup'; 
+            div.innerHTML = '(訂單已複製)<br>請在LINE貼上傳送即可'; 
+            document.body.appendChild(div);
+
+            setTimeout(() => {
+                if (document.body.contains(div)) { 
+                    document.body.removeChild(div);
+                }
+                overlay.style.display = 'none';
+            }, 1500); 
+        }
+
+        function showCustomAlert(message) {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'block';
+
+            const existingPopup = document.querySelector('.copy-success-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+
+            const div = document.createElement('div');
+            div.className = 'copy-success-popup'; 
+            div.style.borderColor = '#d9534f'; 
+            div.innerHTML = message.replace(/\n/g, '<br>'); 
+            document.body.appendChild(div);
+
+            setTimeout(() => {
+                 if (document.body.contains(div)) {
+                    document.body.removeChild(div);
+                }
+                overlay.style.display = 'none';
+            }, 2500); 
+        }
+
+
+        function populateTimeOptions() {
+            const hourSelect = document.getElementById('pickup-hour');
+            const minuteSelect = document.getElementById('pickup-minute');
+
+            
+            hourSelect.innerHTML = '';
+            minuteSelect.innerHTML = '';
+
+            for (let i = 6; i <= 13; i++) { 
+                const hourOption = document.createElement('option');
+                hourOption.value = String(i).padStart(2, '0');
+                hourOption.textContent = String(i).padStart(2, '0');
+                hourSelect.appendChild(hourOption);
+            }
+
+            for (let i = 0; i < 60; i += 5) { 
+                const minuteOption = document.createElement('option');
+                minuteOption.value = String(i).padStart(2, '0');
+                minuteOption.textContent = String(i).padStart(2, '0');
+                minuteSelect.appendChild(minuteOption);
+            }
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTimeOptions();
+            
+            const firstButton = document.querySelector('.navbar button');
+            if (firstButton) {
+                showMenu('dishes', firstButton);
+            } else { 
+                showMenu('dishes', null);
+            }
+        });
+    </script>
+</body>
+</html>
+
